@@ -91,26 +91,26 @@ class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def run
-    if config[:scheme] == ''
-      graphitepath = "#{config[:elasticachename]}.#{config[:metric].downcase}"
-    else
-      graphitepath = config[:scheme]
-    end
+    graphitepath = if config[:scheme] == ''
+                     "#{config[:elasticachename]}.#{config[:metric].downcase}"
+                   else
+                     config[:scheme]
+                   end
 
     dimensions = if config[:cachenodeid]
-      [{
-         'name' => 'CacheClusterId',
-         'value' => config[:cacheclusterid],
-       },{
-         'name' => 'CacheNodeId',
-         'value' => config[:cachenodeid],
-       }]
-    else
-      [{
-        'name' => 'CacheClusterId',
-        'value' => config[:cacheclusterid],
-      }]
-    end
+                   [{
+                     'name' => 'CacheClusterId',
+                     'value' => config[:cacheclusterid]
+                   }, {
+                     'name' => 'CacheNodeId',
+                     'value' => config[:cachenodeid]
+                   }]
+                 else
+                   [{
+                     'name' => 'CacheClusterId',
+                     'value' => config[:cacheclusterid]
+                   }]
+                 end
 
     statistic_type = {
       'redis' => {
